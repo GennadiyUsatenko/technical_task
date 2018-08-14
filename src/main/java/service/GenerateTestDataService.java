@@ -11,12 +11,12 @@ import java.util.Random;
 public class GenerateTestDataService {
 
     // how many departments we have in both companies
-    private final int countOfDepartmentItems = 5;
+    private final int COUNT_OF_DEPARTMENT_ITEMS = 5;
+    public final long LIMIT_OF_DIAPASON = 1_000_000;
     // start of new interval when we divided by into parts a millions diapason(sql query for million records)
     private long startOfNewInterval = 1;
     // size of optimal interval for app
     public long endOfNewInterval = 20000;
-    public final long limitOfDiapason = 1000000;
     // means when its true then test data for Staff db table is ready
     public boolean isStaffTestDataReady = false;
 
@@ -25,8 +25,8 @@ public class GenerateTestDataService {
         Department department = null;
         char endChar = ',';
 
-        for (int i = 1; i <= countOfDepartmentItems; i++) {
-            if(i == countOfDepartmentItems) endChar = ';';
+        for (int i = 1; i <= COUNT_OF_DEPARTMENT_ITEMS; i++) {
+            if(i == COUNT_OF_DEPARTMENT_ITEMS) endChar = ';';
 
             department = new Department("Department" + i, "District" + (i % 2));
 
@@ -47,13 +47,13 @@ public class GenerateTestDataService {
             if(i == endOfNewInterval) endChar = ';';
 
             staff = new Staff("E" + i, getRandomInt(18, 100));
-            employee = new Employee(i, getRandomLong(1, countOfDepartmentItems));
+            employee = new Employee(i, getRandomLong(1, COUNT_OF_DEPARTMENT_ITEMS));
 
             staffTestData.append(staff.toString() + endChar);
             employeeTestData.append(employee.toString() + endChar);
         }
 
-        if( endOfNewInterval == limitOfDiapason ){
+        if( endOfNewInterval == LIMIT_OF_DIAPASON){
             isStaffTestDataReady = true;
         }else{
             long difference = endOfNewInterval - startOfNewInterval + 1;

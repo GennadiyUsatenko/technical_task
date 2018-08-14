@@ -9,13 +9,13 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class CommonParallelProcess implements Runnable {
 
+    private final boolean IS_USE_LOGGER = false;
     private Map<String, Long> map = null;
     private ResultSet resultSet = null;
     private Statement statement = null;
     private String query = null;
     //use 3 type of thread tasks for both Companies
     private String task = null;
-    private final boolean isUseLogger = false;
 
     public CommonParallelProcess(Statement statement, String query, String task){
         this.statement = statement;
@@ -26,7 +26,7 @@ public class CommonParallelProcess implements Runnable {
     @Override
     public void run(){
 
-        if(isUseLogger)System.out.println("Thread is running...");
+        if(IS_USE_LOGGER)System.out.println("Thread is running...");
 
         try {
             switch (task){
@@ -80,7 +80,8 @@ public class CommonParallelProcess implements Runnable {
             }
             statement.close();
 
-            if(isUseLogger)System.out.println("Thread is stopped...");
+            if(IS_USE_LOGGER)System.out.println("Thread is stopped...");
+
         }catch (SQLException e){
             e.printStackTrace();
         }

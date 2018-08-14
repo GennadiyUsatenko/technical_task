@@ -21,8 +21,8 @@ public class SqlTaskService implements sqlTaskStructure {
 
     public SqlTaskService(){
         try {
-            connectionA = DriverManager.getConnection(dbDirectory + dbNameForCompanyA, dbLogin, dbPassword);
-            connectionB = DriverManager.getConnection(dbDirectory + dbNameForCompanyB, dbLogin, dbPassword);
+            connectionA = DriverManager.getConnection(DB_DIRECTORY + DB_NAME_FOR_COMPANY_A, DB_LOGIN, DB_PASSWORD);
+            connectionB = DriverManager.getConnection(DB_DIRECTORY + DB_NAME_FOR_COMPANY_B, DB_LOGIN, DB_PASSWORD);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -52,12 +52,12 @@ public class SqlTaskService implements sqlTaskStructure {
     public void populateDBWithTestData() throws SQLException, InterruptedException{
         // generate five departments
         StringBuilder sqlInsertQuery = new StringBuilder(
-                generateTestDataService.generateTestDataForDepartmentDB(departmentInsertExpr)
+                generateTestDataService.generateTestDataForDepartmentDB(DEPARTMENT_INSERT_EXPR)
         );
         // generate million employees by 20 000 for one time
         while (!generateTestDataService.isStaffTestDataReady){
             sqlInsertQuery.append(
-                    generateTestDataService.generateTestDataForStaffAndEmployeeDB(staffInsertExpr, employeeInsertExpr)
+                    generateTestDataService.generateTestDataForStaffAndEmployeeDB(STAFF_INSERT_EXPR, EMPLOYEE_INSERT_EXPR)
             );
             parallelExecuteQuery( sqlInsertQuery.toString(), "execute" );
             sqlInsertQuery.setLength(0);
@@ -69,10 +69,10 @@ public class SqlTaskService implements sqlTaskStructure {
 
         Long to;
         // get employees within the desired age bounds by 20 000 for one time
-        for (Long from = 1l; from < generateTestDataService.limitOfDiapason; from += generateTestDataService.endOfNewInterval) {
+        for (Long from = 1l; from < generateTestDataService.LIMIT_OF_DIAPASON; from += generateTestDataService.endOfNewInterval) {
             to = from + generateTestDataService.endOfNewInterval;
             parallelExecuteQuery(
-                    sqlReportArgumentEmQuery
+                    SQL_REPORT_ARGUMENT_EM_QUERY
                             .replace("argFrom", from.toString())
                             .replace("argTo", to.toString())
                             .replace("argAge", ageBounds.toString()),
@@ -82,11 +82,11 @@ public class SqlTaskService implements sqlTaskStructure {
 
         ResultListenerService.changeResultFocus();
         // filter departments by District
-        parallelExecuteQuery( sqlReportArgumentDpQuery.replace("arg", district), "executeQuery" );
+        parallelExecuteQuery( SQL_REPORT_ARGUMENT_DP_QUERY.replace("arg", district), "executeQuery" );
 
         // report query with (sub-query for Employee and Departments db)
         parallelExecuteQuery(
-                sqlReportQuery
+                SQL_REPORT_QUERY
                         .replace("arg1", ResultListenerService.resultEmForReportArgumentA.toString())
                         .replaceAll("arg2", ResultListenerService.resultDpForReportArgumentA.toString()),
                 "mapExecuteQuery"
